@@ -1,1 +1,2046 @@
-# nivaro
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nivaro — Verified Properties. Zero Guesswork.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,600;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2A;
+    --navy-mid: #1A2E45;
+    --navy-soft: #243B55;
+    --teal: #0FA98E;
+    --teal-light: #13C4A5;
+    --teal-dim: rgba(15,169,142,0.12);
+    --teal-glow: rgba(15,169,142,0.25);
+    --white: #FFFFFF;
+    --off-white: #F7F8FA;
+    --grey-100: #EEF0F4;
+    --grey-200: #D8DCE5;
+    --grey-400: #8E96A8;
+    --grey-600: #52596B;
+    --text-dark: #0D1B2A;
+    --text-mid: #3D4A5C;
+    --text-soft: #6B7689;
+    --radius-sm: 8px;
+    --radius-md: 14px;
+    --radius-lg: 22px;
+    --radius-xl: 32px;
+    --shadow-sm: 0 1px 4px rgba(13,27,42,0.07);
+    --shadow-md: 0 4px 20px rgba(13,27,42,0.10);
+    --shadow-lg: 0 12px 48px rgba(13,27,42,0.14);
+    --transition: 0.22s cubic-bezier(.4,0,.2,1);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--text-dark);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ── PAGES ── */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--grey-100);
+    transition: var(--transition);
+  }
+  .nav-inner {
+    max-width: 1280px; margin: 0 auto;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 24px; height: 68px;
+  }
+  .nav-logo {
+    display: flex; align-items: center; gap: 8px;
+    cursor: pointer; text-decoration: none;
+  }
+  .logo-mark {
+    width: 34px; height: 34px;
+    background: var(--navy);
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+    width: 14px; height: 14px;
+    background: var(--teal);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  }
+  .logo-mark::before {
+    content: '';
+    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+    width: 10px; height: 10px;
+    background: var(--white);
+    border-radius: 50%;
+    z-index: 1;
+  }
+  .logo-text {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--navy); letter-spacing: -0.5px;
+  }
+  .logo-text span { color: var(--teal); }
+
+  .nav-links { display: flex; align-items: center; gap: 6px; }
+  .nav-link {
+    padding: 8px 14px; border-radius: var(--radius-sm);
+    color: var(--text-mid); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: var(--transition);
+    border: none; background: transparent;
+    text-decoration: none;
+  }
+  .nav-link:hover { background: var(--grey-100); color: var(--navy); }
+  .nav-link.active { color: var(--navy); font-weight: 600; }
+
+  .nav-actions { display: flex; align-items: center; gap: 10px; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 20px; border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    border: none; text-decoration: none; white-space: nowrap;
+  }
+  .btn-ghost {
+    background: transparent; color: var(--text-mid);
+    border: 1.5px solid var(--grey-200);
+  }
+  .btn-ghost:hover { border-color: var(--navy); color: var(--navy); }
+  .btn-primary {
+    background: var(--navy); color: var(--white);
+  }
+  .btn-primary:hover { background: var(--navy-mid); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+  .btn-teal {
+    background: var(--teal); color: var(--white);
+  }
+  .btn-teal:hover { background: var(--teal-light); transform: translateY(-1px); box-shadow: 0 6px 24px var(--teal-glow); }
+  .btn-lg { padding: 14px 28px; font-size: 15px; border-radius: var(--radius-md); }
+  .btn-outline-white {
+    background: transparent; color: var(--white);
+    border: 1.5px solid rgba(255,255,255,0.4);
+  }
+  .btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.7); }
+
+  /* ── HAMBURGER ── */
+  .hamburger {
+    display: none; flex-direction: column; gap: 5px;
+    cursor: pointer; padding: 6px; border: none; background: transparent;
+  }
+  .hamburger span {
+    display: block; width: 22px; height: 2px;
+    background: var(--navy); border-radius: 2px;
+    transition: var(--transition);
+  }
+  .mobile-menu {
+    display: none; position: fixed; top: 68px; left: 0; right: 0; bottom: 0;
+    background: var(--white); z-index: 999;
+    padding: 24px; flex-direction: column; gap: 8px;
+    border-top: 1px solid var(--grey-100);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu .nav-link { font-size: 16px; padding: 14px 16px; }
+
+  /* ── SECTION COMMONS ── */
+  .section { padding: 96px 0; }
+  .section-sm { padding: 64px 0; }
+  .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  .section-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--teal-dim); border: 1px solid rgba(15,169,142,0.2);
+    border-radius: 100px; padding: 6px 14px;
+    color: var(--teal); font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px;
+  }
+  .section-label::before {
+    content: ''; width: 6px; height: 6px;
+    background: var(--teal); border-radius: 50%;
+  }
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 42px);
+    font-weight: 600; line-height: 1.2;
+    color: var(--navy); letter-spacing: -0.5px;
+  }
+  .section-sub {
+    font-size: 16px; color: var(--text-soft); margin-top: 12px; max-width: 520px;
+  }
+
+  /* ── VERIFIED BADGE ── */
+  .badge-verified {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: var(--teal-dim);
+    border: 1px solid rgba(15,169,142,0.3);
+    color: var(--teal); font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 100px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .badge-verified::before { content: '✓'; font-weight: 900; }
+
+  /* ── BADGE PENDING ── */
+  .badge-pending {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.3);
+    color: #B45309; font-size: 11px; font-weight: 700;
+    padding: 4px 10px; border-radius: 100px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+
+  /* ═══════════════════════════════
+     HOME PAGE
+  ═══════════════════════════════ */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(155deg, var(--navy) 0%, var(--navy-mid) 50%, #0B3954 100%);
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    padding-top: 68px;
+  }
+  .hero-pattern {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(circle at 20% 50%, rgba(15,169,142,0.08) 0%, transparent 60%),
+      radial-gradient(circle at 80% 20%, rgba(15,169,142,0.05) 0%, transparent 50%),
+      linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.02) 100%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+  .hero-inner {
+    position: relative; z-index: 1;
+    max-width: 1280px; margin: 0 auto;
+    padding: 0 24px;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 64px; align-items: center;
+    flex: 1; min-height: calc(100vh - 68px);
+  }
+  .hero-content { padding: 64px 0; }
+  .hero-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(15,169,142,0.15); border: 1px solid rgba(15,169,142,0.3);
+    border-radius: 100px; padding: 6px 16px;
+    color: var(--teal-light); font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 28px;
+  }
+  .hero-eyebrow-dot {
+    width: 6px; height: 6px; background: var(--teal); border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.4); opacity: 0.7; }
+  }
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(38px, 5.5vw, 68px);
+    font-weight: 600; line-height: 1.08;
+    color: var(--white); letter-spacing: -1.5px; margin-bottom: 24px;
+  }
+  .hero-title em { font-style: italic; color: var(--teal-light); }
+  .hero-sub {
+    font-size: 17px; color: rgba(255,255,255,0.65);
+    line-height: 1.7; margin-bottom: 40px; max-width: 460px;
+  }
+  .hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+  /* Stats bar */
+  .hero-stats {
+    display: flex; gap: 40px; margin-top: 56px;
+    padding-top: 40px; border-top: 1px solid rgba(255,255,255,0.1);
+  }
+  .stat-item {}
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 600; color: var(--white); line-height: 1;
+  }
+  .stat-num span { color: var(--teal-light); }
+  .stat-label { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+  /* Hero Visual */
+  .hero-visual { position: relative; }
+  .hero-cards-stack { position: relative; height: 500px; }
+  .hero-card-main {
+    position: absolute; top: 40px; left: 0; right: 0;
+    background: var(--white); border-radius: var(--radius-xl);
+    overflow: hidden; box-shadow: var(--shadow-lg);
+    animation: float1 6s ease-in-out infinite;
+  }
+  @keyframes float1 {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+  }
+  .hero-card-img {
+    width: 100%; height: 220px;
+    background: linear-gradient(135deg, #1A3A5C 0%, #2D6A4F 100%);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 64px; position: relative; overflow: hidden;
+  }
+  .hero-card-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.3) 100%);
+  }
+  .hero-card-badge-pos {
+    position: absolute; top: 14px; right: 14px;
+  }
+  .hero-card-body { padding: 20px 22px 22px; }
+  .hero-card-price {
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 600; color: var(--navy);
+  }
+  .hero-card-title { font-size: 14px; color: var(--text-soft); margin-top: 2px; }
+  .hero-card-specs {
+    display: flex; gap: 16px; margin-top: 14px;
+    padding-top: 14px; border-top: 1px solid var(--grey-100);
+  }
+  .hero-card-spec { font-size: 12px; color: var(--text-soft); display: flex; align-items: center; gap: 4px; }
+
+  /* Floating mini card */
+  .hero-mini-card {
+    position: absolute; bottom: 30px; right: -20px;
+    background: var(--white); border-radius: var(--radius-md);
+    padding: 14px 18px; box-shadow: var(--shadow-lg);
+    min-width: 200px;
+    animation: float2 5s ease-in-out infinite 1s;
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translateY(0) rotate(-1deg); }
+    50% { transform: translateY(-8px) rotate(1deg); }
+  }
+  .mini-card-label { font-size: 11px; color: var(--text-soft); font-weight: 500; }
+  .mini-card-val {
+    font-size: 16px; font-weight: 700; color: var(--navy); margin-top: 2px;
+  }
+  .mini-progress { width: 100%; height: 4px; background: var(--grey-100); border-radius: 2px; margin-top: 8px; }
+  .mini-progress-bar { height: 100%; background: var(--teal); border-radius: 2px; width: 78%; }
+
+  .hero-trust-card {
+    position: absolute; top: 20px; right: -30px;
+    background: var(--navy); border-radius: var(--radius-md);
+    padding: 12px 16px; box-shadow: var(--shadow-lg);
+    animation: float3 7s ease-in-out infinite 2s;
+  }
+  @keyframes float3 {
+    0%, 100% { transform: translateY(0) rotate(1.5deg); }
+    50% { transform: translateY(-10px) rotate(-0.5deg); }
+  }
+  .trust-card-label { font-size: 10px; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 1px; }
+  .trust-card-items { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .trust-card-item { display: flex; align-items: center; gap: 7px; }
+  .trust-card-dot { width: 6px; height: 6px; border-radius: 50%; }
+  .trust-card-dot.green { background: var(--teal); }
+  .trust-card-text { font-size: 11px; color: rgba(255,255,255,0.8); font-weight: 500; }
+
+  /* ── TRUST SECTION ── */
+  .trust-section {
+    padding: 80px 0;
+    background: var(--off-white);
+  }
+  .trust-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 48px;
+  }
+  .trust-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    padding: 32px; border: 1px solid var(--grey-100);
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
+    transition: var(--transition);
+  }
+  .trust-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+  .trust-card-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: var(--teal-dim); display: flex; align-items: center;
+    justify-content: center; font-size: 24px; margin-bottom: 20px;
+  }
+  .trust-card-name { font-size: 17px; font-weight: 700; color: var(--navy); }
+  .trust-card-desc { font-size: 14px; color: var(--text-soft); margin-top: 8px; line-height: 1.6; }
+  .trust-card-accent {
+    position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle at 100% 0%, var(--teal-dim) 0%, transparent 70%);
+  }
+
+  /* ── LISTINGS ── */
+  .listings-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    margin-top: 48px;
+  }
+  .property-card {
+    background: var(--white); border-radius: var(--radius-lg);
+    overflow: hidden; border: 1px solid var(--grey-100);
+    box-shadow: var(--shadow-sm); transition: var(--transition);
+    cursor: pointer;
+  }
+  .property-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-lg); }
+  .property-card-img {
+    height: 200px; position: relative; overflow: hidden;
+    background: linear-gradient(135deg, #1e3a5f, #2d6a4f);
+    display: flex; align-items: center; justify-content: center; font-size: 48px;
+  }
+  .card-img-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(to bottom, transparent 40%, rgba(13,27,42,0.5) 100%);
+  }
+  .card-badge-pos { position: absolute; top: 12px; left: 12px; }
+  .card-save-btn {
+    position: absolute; top: 12px; right: 12px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.9); border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; transition: var(--transition);
+  }
+  .card-save-btn:hover { background: var(--white); transform: scale(1.1); }
+  .card-price-tag {
+    position: absolute; bottom: 12px; left: 12px;
+    background: var(--navy); color: var(--white);
+    padding: 5px 12px; border-radius: 100px;
+    font-family: 'Fraunces', serif;
+    font-size: 14px; font-weight: 600;
+  }
+  .property-card-body { padding: 18px 20px 20px; }
+  .card-title { font-size: 16px; font-weight: 700; color: var(--navy); }
+  .card-location { font-size: 13px; color: var(--text-soft); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+  .card-specs {
+    display: flex; gap: 14px; margin-top: 14px;
+    padding-top: 14px; border-top: 1px solid var(--grey-100);
+  }
+  .card-spec { font-size: 12px; color: var(--text-mid); font-weight: 500; display: flex; align-items: center; gap: 4px; }
+  .card-cta { margin-top: 16px; width: 100%; text-align: center; }
+
+  /* ── HOW IT WORKS ── */
+  .how-section { background: var(--navy); padding: 96px 0; }
+  .how-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px;
+    margin-top: 56px;
+  }
+  .how-step {
+    padding: 40px 32px;
+    border-right: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .how-step:last-child { border-right: none; }
+  .step-num {
+    font-family: 'Fraunces', serif;
+    font-size: 64px; font-weight: 300;
+    color: rgba(255,255,255,0.06); line-height: 1;
+    position: absolute; top: 24px; right: 24px;
+  }
+  .step-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    background: rgba(15,169,142,0.15); border: 1px solid rgba(15,169,142,0.25);
+    display: flex; align-items: center; justify-content: center; font-size: 24px;
+    margin-bottom: 20px;
+  }
+  .step-title { font-size: 18px; font-weight: 700; color: var(--white); }
+  .step-desc { font-size: 14px; color: rgba(255,255,255,0.5); margin-top: 8px; line-height: 1.6; }
+
+  /* ── LISTING PAGE ── */
+  .listing-layout {
+    display: grid; grid-template-columns: 280px 1fr;
+    gap: 32px; margin-top: 32px;
+  }
+  .filter-sidebar {
+    position: sticky; top: 88px; height: fit-content;
+    background: var(--white); border-radius: var(--radius-lg);
+    border: 1px solid var(--grey-100); padding: 24px;
+    box-shadow: var(--shadow-sm);
+  }
+  .filter-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 20px; }
+  .filter-group { margin-bottom: 24px; }
+  .filter-label { font-size: 12px; font-weight: 600; color: var(--text-soft); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .filter-input {
+    width: 100%; padding: 10px 14px;
+    border: 1.5px solid var(--grey-200); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-dark);
+    transition: var(--transition); outline: none; background: var(--white);
+  }
+  .filter-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+  .filter-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .filter-chip {
+    padding: 7px 14px; border-radius: 100px;
+    border: 1.5px solid var(--grey-200);
+    font-size: 13px; font-weight: 500; color: var(--text-mid);
+    cursor: pointer; transition: var(--transition); background: var(--white);
+  }
+  .filter-chip:hover, .filter-chip.active {
+    border-color: var(--teal); color: var(--teal); background: var(--teal-dim);
+  }
+  .filter-toggle {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0;
+  }
+  .toggle-label { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .toggle-switch {
+    width: 42px; height: 24px; border-radius: 12px;
+    background: var(--teal); position: relative; cursor: pointer;
+    transition: var(--transition);
+  }
+  .toggle-switch::after {
+    content: ''; position: absolute; top: 3px; right: 4px;
+    width: 18px; height: 18px; border-radius: 50%; background: var(--white);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.2); transition: var(--transition);
+  }
+  .toggle-switch.off { background: var(--grey-200); }
+  .toggle-switch.off::after { right: auto; left: 4px; }
+
+  /* listings grid right */
+  .listings-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .listings-count { font-size: 14px; color: var(--text-soft); }
+  .listings-count strong { color: var(--navy); }
+  .listings-right-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;
+  }
+
+  /* mobile filter btn */
+  .mobile-filter-btn {
+    display: none; width: 100%; margin-bottom: 16px;
+  }
+  .filter-drawer {
+    display: none; position: fixed; inset: 0; z-index: 2000;
+  }
+  .filter-drawer.open { display: block; }
+  .filter-drawer-overlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,0.5);
+  }
+  .filter-drawer-panel {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    background: var(--white); border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    padding: 24px; max-height: 80vh; overflow-y: auto;
+  }
+  .drawer-handle {
+    width: 40px; height: 4px; background: var(--grey-200);
+    border-radius: 2px; margin: 0 auto 20px;
+  }
+
+  /* ── DETAIL PAGE ── */
+  .detail-grid {
+    display: grid; grid-template-columns: 1fr 380px; gap: 40px;
+    margin-top: 32px;
+  }
+  .detail-gallery {
+    border-radius: var(--radius-xl); overflow: hidden;
+    height: 440px; position: relative;
+    background: linear-gradient(135deg, #1e3a5f, #2d6a4f);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 80px;
+  }
+  .gallery-thumbnails {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;
+  }
+  .thumb {
+    height: 80px; border-radius: var(--radius-sm); overflow: hidden;
+    background: var(--grey-100); cursor: pointer; transition: var(--transition);
+    display: flex; align-items: center; justify-content: center; font-size: 28px;
+  }
+  .thumb:hover { transform: scale(1.02); box-shadow: var(--shadow-md); }
+
+  .detail-specs-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0;
+  }
+  .detail-spec {
+    background: var(--off-white); border-radius: var(--radius-sm);
+    padding: 14px; text-align: center;
+  }
+  .detail-spec-val { font-size: 18px; font-weight: 700; color: var(--navy); }
+  .detail-spec-label { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
+
+  .verify-breakdown {
+    background: var(--off-white); border-radius: var(--radius-md);
+    padding: 20px; margin-top: 20px;
+  }
+  .verify-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--grey-100);
+  }
+  .verify-item:last-child { border-bottom: none; }
+  .verify-item-left { display: flex; align-items: center; gap: 10px; }
+  .verify-icon { font-size: 18px; }
+  .verify-name { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .verify-status-done {
+    font-size: 12px; font-weight: 700;
+    color: var(--teal); background: var(--teal-dim);
+    padding: 3px 10px; border-radius: 100px;
+  }
+
+  /* sticky sidebar */
+  .detail-sidebar {
+    position: sticky; top: 88px; height: fit-content;
+  }
+  .sidebar-card {
+    background: var(--white); border-radius: var(--radius-xl);
+    border: 1px solid var(--grey-100); padding: 28px;
+    box-shadow: var(--shadow-md);
+  }
+  .sidebar-price {
+    font-family: 'Fraunces', serif;
+    font-size: 32px; font-weight: 600; color: var(--navy); line-height: 1;
+  }
+  .sidebar-price-sub { font-size: 13px; color: var(--text-soft); margin-top: 4px; }
+  .dealer-info {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--off-white); border-radius: var(--radius-md);
+    padding: 16px; margin: 20px 0;
+  }
+  .dealer-avatar {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: var(--navy); display: flex; align-items: center;
+    justify-content: center; font-size: 18px;
+  }
+  .dealer-name { font-size: 14px; font-weight: 700; color: var(--navy); }
+  .dealer-role { font-size: 12px; color: var(--text-soft); }
+
+  /* ── BOOKING FLOW ── */
+  .booking-container {
+    max-width: 680px; margin: 0 auto; padding: 96px 24px;
+  }
+  .booking-steps {
+    display: flex; align-items: center; gap: 0;
+    margin-bottom: 48px;
+  }
+  .booking-step {
+    display: flex; align-items: center; gap: 8px; flex: 1;
+  }
+  .step-circle {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: var(--grey-100); color: var(--text-soft);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; flex-shrink: 0;
+    transition: var(--transition);
+  }
+  .step-circle.done { background: var(--teal); color: var(--white); }
+  .step-circle.active { background: var(--navy); color: var(--white); }
+  .step-label { font-size: 12px; color: var(--text-soft); font-weight: 500; }
+  .step-label.active { color: var(--navy); font-weight: 700; }
+  .step-connector { flex: 1; height: 1px; background: var(--grey-200); margin: 0 8px; }
+  .step-connector.done { background: var(--teal); }
+
+  .booking-card {
+    background: var(--white); border-radius: var(--radius-xl);
+    border: 1px solid var(--grey-100); padding: 36px;
+    box-shadow: var(--shadow-md);
+  }
+  .booking-card-title { font-size: 22px; font-weight: 700; color: var(--navy); margin-bottom: 8px; }
+  .booking-card-sub { font-size: 14px; color: var(--text-soft); margin-bottom: 28px; }
+
+  .form-group { margin-bottom: 20px; }
+  .form-label { font-size: 13px; font-weight: 600; color: var(--text-mid); margin-bottom: 7px; display: block; }
+  .form-input {
+    width: 100%; padding: 12px 16px;
+    border: 1.5px solid var(--grey-200); border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; color: var(--text-dark);
+    transition: var(--transition); outline: none; background: var(--white);
+  }
+  .form-input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-dim); }
+
+  .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 8px; }
+  .plan-card {
+    border: 2px solid var(--grey-200); border-radius: var(--radius-md);
+    padding: 20px; cursor: pointer; transition: var(--transition);
+    position: relative;
+  }
+  .plan-card:hover { border-color: var(--grey-400); }
+  .plan-card.selected { border-color: var(--teal); background: var(--teal-dim); }
+  .plan-card-name { font-size: 15px; font-weight: 700; color: var(--navy); }
+  .plan-card-price { font-size: 20px; font-weight: 700; color: var(--teal); margin-top: 4px; }
+  .plan-card-desc { font-size: 12px; color: var(--text-soft); margin-top: 8px; }
+  .plan-check {
+    position: absolute; top: 12px; right: 12px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--teal); color: var(--white);
+    display: none; align-items: center; justify-content: center;
+    font-size: 11px;
+  }
+  .plan-card.selected .plan-check { display: flex; }
+
+  .time-slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 8px; }
+  .time-slot {
+    padding: 10px; border-radius: var(--radius-sm);
+    border: 1.5px solid var(--grey-200);
+    text-align: center; font-size: 13px; font-weight: 600;
+    color: var(--text-mid); cursor: pointer; transition: var(--transition);
+  }
+  .time-slot:hover { border-color: var(--teal); color: var(--teal); }
+  .time-slot.selected { border-color: var(--teal); background: var(--teal-dim); color: var(--teal); }
+
+  .booking-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+
+  /* Summary */
+  .summary-row {
+    display: flex; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--grey-100);
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-key { font-size: 14px; color: var(--text-soft); }
+  .summary-val { font-size: 14px; font-weight: 600; color: var(--navy); }
+  .summary-total { font-size: 18px !important; color: var(--navy) !important; }
+
+  /* Success state */
+  .success-screen { text-align: center; padding: 40px 0; }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: var(--teal-dim); border: 2px solid rgba(15,169,142,0.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px; margin: 0 auto 24px;
+  }
+  .success-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--navy); }
+  .success-sub { font-size: 15px; color: var(--text-soft); margin-top: 12px; }
+  .booking-id {
+    display: inline-block; background: var(--navy); color: var(--white);
+    border-radius: var(--radius-sm); padding: 6px 16px;
+    font-size: 13px; font-weight: 700; letter-spacing: 2px; margin-top: 16px;
+  }
+
+  /* ── DASHBOARD ── */
+  .dashboard-layout {
+    display: grid; grid-template-columns: 240px 1fr; gap: 32px;
+    max-width: 1280px; margin: 0 auto; padding: 104px 24px 64px;
+  }
+  .dash-sidebar {
+    position: sticky; top: 88px; height: fit-content;
+  }
+  .dash-nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 11px 14px; border-radius: var(--radius-sm);
+    font-size: 14px; font-weight: 500; color: var(--text-mid);
+    cursor: pointer; transition: var(--transition);
+    margin-bottom: 2px;
+  }
+  .dash-nav-item:hover { background: var(--off-white); color: var(--navy); }
+  .dash-nav-item.active { background: var(--navy); color: var(--white); }
+  .dash-nav-icon { font-size: 16px; }
+
+  .dash-header { margin-bottom: 32px; }
+  .dash-title { font-family: 'Fraunces', serif; font-size: 28px; font-weight: 600; color: var(--navy); }
+  .dash-sub { font-size: 14px; color: var(--text-soft); margin-top: 6px; }
+
+  .dash-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+  .dash-stat {
+    background: var(--white); border-radius: var(--radius-md);
+    border: 1px solid var(--grey-100); padding: 22px;
+  }
+  .dash-stat-val { font-family: 'Fraunces', serif; font-size: 32px; font-weight: 600; color: var(--navy); }
+  .dash-stat-label { font-size: 13px; color: var(--text-soft); margin-top: 4px; }
+  .dash-stat-change { font-size: 12px; color: var(--teal); font-weight: 600; margin-top: 8px; }
+
+  .table-container { background: var(--white); border-radius: var(--radius-lg); border: 1px solid var(--grey-100); overflow: hidden; }
+  .table-header { padding: 20px 24px; border-bottom: 1px solid var(--grey-100); display: flex; justify-content: space-between; align-items: center; }
+  .table-title { font-size: 16px; font-weight: 700; color: var(--navy); }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; padding: 12px 20px;
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 1px; color: var(--text-soft);
+    background: var(--off-white); border-bottom: 1px solid var(--grey-100);
+  }
+  td { padding: 16px 20px; font-size: 14px; color: var(--text-mid); border-bottom: 1px solid var(--grey-100); }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: var(--off-white); }
+
+  .status-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 10px; border-radius: 100px; font-size: 11px; font-weight: 700;
+  }
+  .status-done { background: var(--teal-dim); color: var(--teal); }
+  .status-pending { background: rgba(245,158,11,0.1); color: #B45309; }
+  .status-progress { background: rgba(59,130,246,0.1); color: #1D4ED8; }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    background: var(--navy);
+    padding: 100px 0 48px; margin-bottom: 0;
+  }
+  .page-header-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 600; color: var(--white); letter-spacing: -0.5px;
+  }
+  .page-header-sub { font-size: 15px; color: rgba(255,255,255,0.6); margin-top: 10px; }
+  .page-header-breadcrumb {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: rgba(255,255,255,0.4); margin-bottom: 16px;
+  }
+  .breadcrumb-sep { color: rgba(255,255,255,0.2); }
+  .breadcrumb-link { cursor: pointer; transition: var(--transition); }
+  .breadcrumb-link:hover { color: rgba(255,255,255,0.8); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy); border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 64px 0 32px;
+  }
+  .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; }
+  .footer-brand-desc { font-size: 14px; color: rgba(255,255,255,0.45); margin-top: 16px; line-height: 1.7; max-width: 260px; }
+  .footer-col-title { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.3); margin-bottom: 16px; }
+  .footer-link {
+    display: block; font-size: 14px; color: rgba(255,255,255,0.55);
+    margin-bottom: 10px; cursor: pointer; transition: var(--transition);
+    text-decoration: none;
+  }
+  .footer-link:hover { color: var(--white); }
+  .footer-bottom {
+    margin-top: 48px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.07);
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-copy { font-size: 13px; color: rgba(255,255,255,0.3); }
+
+  /* Dealer Register */
+  .auth-container { max-width: 480px; margin: 0 auto; padding: 104px 24px 64px; }
+  .auth-card {
+    background: var(--white); border-radius: var(--radius-xl);
+    border: 1px solid var(--grey-100); padding: 40px;
+    box-shadow: var(--shadow-lg);
+  }
+  .auth-title { font-family: 'Fraunces', serif; font-size: 26px; font-weight: 600; color: var(--navy); }
+  .auth-sub { font-size: 14px; color: var(--text-soft); margin-top: 8px; margin-bottom: 28px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  /* ── RESPONSIVE ── */
+
+  /* Tablet */
+  @media (max-width: 1100px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 0; }
+    .hero-visual { display: none; }
+    .hero-content { padding: 80px 0 64px; }
+    .hero-title { font-size: clamp(36px, 6vw, 56px); }
+    .hero-sub { max-width: 100%; }
+    .trust-grid { grid-template-columns: repeat(3, 1fr); }
+    .listings-grid { grid-template-columns: repeat(2, 1fr); }
+    .how-grid { grid-template-columns: 1fr; }
+    .how-step { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .how-step:last-child { border-bottom: none; }
+    .listing-layout { grid-template-columns: 240px 1fr; }
+    .detail-grid { grid-template-columns: 1fr; }
+    .detail-sidebar { position: static; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+    .dashboard-layout { grid-template-columns: 1fr; }
+    .dash-sidebar { display: none; }
+    .dash-stats { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav-actions { display: none; }
+    .hamburger { display: flex; }
+
+    .hero-inner { padding: 24px; }
+    .hero-content { padding: 48px 0 40px; }
+    .hero-stats { gap: 24px; }
+    .hero-ctas { flex-direction: column; }
+    .hero-ctas .btn { width: 100%; justify-content: center; }
+
+    .section { padding: 56px 0; }
+    .trust-grid { grid-template-columns: 1fr; }
+    .listings-grid { grid-template-columns: 1fr; }
+
+    .listing-layout { grid-template-columns: 1fr; }
+    .filter-sidebar { display: none; }
+    .mobile-filter-btn { display: flex; }
+    .listings-right-grid { grid-template-columns: 1fr; }
+
+    .detail-specs-grid { grid-template-columns: repeat(3, 1fr); }
+    .gallery-thumbnails { grid-template-columns: repeat(4, 1fr); }
+
+    .booking-container { padding: 88px 16px 40px; }
+    .plan-grid { grid-template-columns: 1fr; }
+    .time-slots { grid-template-columns: repeat(2, 1fr); }
+    .booking-card { padding: 22px 18px; }
+
+    .footer-grid { grid-template-columns: 1fr; gap: 28px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+
+    .auth-card { padding: 28px 20px; }
+    .form-row { grid-template-columns: 1fr; }
+    .dash-stats { grid-template-columns: 1fr; }
+
+    /* mobile detail cta bar */
+    .mobile-cta-bar {
+      display: flex !important;
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--white); border-top: 1px solid var(--grey-100);
+      padding: 14px 20px; gap: 10px; z-index: 900;
+      box-shadow: 0 -4px 24px rgba(13,27,42,0.08);
+    }
+    .mobile-cta-bar .btn { flex: 1; justify-content: center; }
+    .page-detail-content { padding-bottom: 90px; }
+  }
+
+  .mobile-cta-bar { display: none; }
+
+  /* ── UTILITY ── */
+  .mt-8 { margin-top: 8px; }
+  .mt-16 { margin-top: 16px; }
+  .mt-24 { margin-top: 24px; }
+  .text-teal { color: var(--teal); }
+  .divider { height: 1px; background: var(--grey-100); margin: 24px 0; }
+
+  /* Back btn */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: rgba(255,255,255,0.6); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: var(--transition); border: none; background: transparent;
+    margin-bottom: 16px;
+  }
+  .back-btn:hover { color: var(--white); }
+  .back-btn-dark {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--text-soft); font-size: 14px; font-weight: 500;
+    cursor: pointer; transition: var(--transition); border: none; background: transparent;
+    padding: 10px 0;
+  }
+  .back-btn-dark:hover { color: var(--navy); }
+
+  /* Property card colors for variety */
+  .card-bg-1 { background: linear-gradient(135deg, #1e3a5f 0%, #2d6a4f 100%); }
+  .card-bg-2 { background: linear-gradient(135deg, #3b1f5e 0%, #1e3a5f 100%); }
+  .card-bg-3 { background: linear-gradient(135deg, #5e3b1f 0%, #1e3a5f 100%); }
+  .card-bg-4 { background: linear-gradient(135deg, #1f5e4f 0%, #1e3a5f 100%); }
+  .card-bg-5 { background: linear-gradient(135deg, #5e1f2d 0%, #1e3a5f 100%); }
+  .card-bg-6 { background: linear-gradient(135deg, #1f4a5e 0%, #3d5e1f 100%); }
+
+  /* Smooth appear */
+  .page.active {
+    animation: fadeIn 0.3s ease;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════ NAV ═══════ -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" onclick="navigate('home')">
+      <div class="logo-mark"></div>
+      <span class="logo-text">Niv<span>aro</span></span>
+    </a>
+    <div class="nav-links">
+      <button class="nav-link" onclick="navigate('listings')">Browse Properties</button>
+      <button class="nav-link" onclick="navigate('booking')">Verify a Property</button>
+      <button class="nav-link" onclick="navigate('dealer')">For Dealers</button>
+      <button class="nav-link" onclick="navigate('dashboard')">Dashboard</button>
+    </div>
+    <div class="nav-actions">
+      <button class="btn btn-ghost" onclick="navigate('dealer')">Sign In</button>
+      <button class="btn btn-primary" onclick="navigate('booking')">Book Verification</button>
+    </div>
+    <button class="hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="nav-link" onclick="navigate('listings');toggleMenu()">Browse Properties</button>
+  <button class="nav-link" onclick="navigate('booking');toggleMenu()">Verify a Property</button>
+  <button class="nav-link" onclick="navigate('dealer');toggleMenu()">For Dealers</button>
+  <button class="nav-link" onclick="navigate('dashboard');toggleMenu()">Dashboard</button>
+  <div style="margin-top:16px;display:flex;flex-direction:column;gap:10px;">
+    <button class="btn btn-ghost" style="width:100%;justify-content:center" onclick="navigate('dealer');toggleMenu()">Sign In</button>
+    <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="navigate('booking');toggleMenu()">Book Verification</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: HOME
+═══════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-pattern"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-content">
+        <div class="hero-eyebrow">
+          <div class="hero-eyebrow-dot"></div>
+          India's Most Trusted Property Platform
+        </div>
+        <h1 class="hero-title">Verified Properties.<br><em>Zero Guesswork.</em></h1>
+        <p class="hero-sub">Buy, rent, or verify properties with complete confidence. Every listing on Nivaro is verified or can be verified before you commit.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-teal btn-lg" onclick="navigate('listings')">
+            🏠 Browse Properties
+          </button>
+          <button class="btn btn-outline-white btn-lg" onclick="navigate('booking')">
+            ✓ Verify a Property
+          </button>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-num">4,200<span>+</span></div>
+            <div class="stat-label">Verified Listings</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">98<span>%</span></div>
+            <div class="stat-label">Accuracy Rate</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-num">18k<span>+</span></div>
+            <div class="stat-label">Happy Buyers</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-visual">
+        <div class="hero-cards-stack">
+          <div class="hero-card-main">
+            <div class="hero-card-img card-bg-1">
+              🏢
+              <div class="hero-card-img-overlay"></div>
+              <div class="hero-card-badge-pos">
+                <span class="badge-verified">Verified</span>
+              </div>
+            </div>
+            <div class="hero-card-body">
+              <div class="hero-card-price">₹1.2 Cr</div>
+              <div class="hero-card-title">3BHK Premium Flat · Bandra West, Mumbai</div>
+              <div class="hero-card-specs">
+                <div class="hero-card-spec">🛏 3 BHK</div>
+                <div class="hero-card-spec">📐 1,450 sqft</div>
+                <div class="hero-card-spec">🏢 12th Floor</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-trust-card">
+            <div class="trust-card-label">Verification Status</div>
+            <div class="trust-card-items">
+              <div class="trust-card-item">
+                <div class="trust-card-dot green"></div>
+                <div class="trust-card-text">Legal Documents ✓</div>
+              </div>
+              <div class="trust-card-item">
+                <div class="trust-card-dot green"></div>
+                <div class="trust-card-text">Title Clear ✓</div>
+              </div>
+              <div class="trust-card-item">
+                <div class="trust-card-dot green"></div>
+                <div class="trust-card-text">Site Inspected ✓</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-mini-card">
+            <div class="mini-card-label">Verification Progress</div>
+            <div class="mini-card-val">78% Complete</div>
+            <div class="mini-progress"><div class="mini-progress-bar"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST PILLARS -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="section-label">Why Nivaro</div>
+      <h2 class="section-title">Built on a foundation of trust</h2>
+      <p class="section-sub">Every property goes through a rigorous multi-layer verification before it earns the Nivaro badge.</p>
+      <div class="trust-grid">
+        <div class="trust-card">
+          <div class="trust-card-accent"></div>
+          <div class="trust-card-icon">⚖️</div>
+          <div class="trust-card-name">Legal Verification</div>
+          <div class="trust-card-desc">We review ownership history, encumbrance certificates, and litigation status — so there are no legal surprises after purchase.</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-card-accent"></div>
+          <div class="trust-card-icon">📄</div>
+          <div class="trust-card-name">Document Verification</div>
+          <div class="trust-card-desc">Every sale deed, building plan approval, RERA registration, and property tax receipt is cross-verified with government records.</div>
+        </div>
+        <div class="trust-card">
+          <div class="trust-card-accent"></div>
+          <div class="trust-card-icon">🔍</div>
+          <div class="trust-card-name">On-Ground Inspection</div>
+          <div class="trust-card-desc">Our certified inspectors physically visit and assess the property — structure, amenities, neighbourhood, and match it against the listed details.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED LISTINGS -->
+  <section class="section" style="background: var(--white);">
+    <div class="container">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;">
+        <div>
+          <div class="section-label">Featured</div>
+          <h2 class="section-title">Top Verified Properties</h2>
+        </div>
+        <button class="btn btn-ghost" onclick="navigate('listings')">View All Properties →</button>
+      </div>
+      <div class="listings-grid">
+        <!-- Card 1 -->
+        <div class="property-card" onclick="navigate('detail')">
+          <div class="property-card-img card-bg-1">
+            🏢
+            <div class="card-img-overlay"></div>
+            <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+            <button class="card-save-btn" onclick="event.stopPropagation()">🤍</button>
+            <div class="card-price-tag">₹1.2 Cr</div>
+          </div>
+          <div class="property-card-body">
+            <div class="card-title">Premium 3BHK Apartment</div>
+            <div class="card-location">📍 Bandra West, Mumbai</div>
+            <div class="card-specs">
+              <div class="card-spec">🛏 3 BHK</div>
+              <div class="card-spec">📐 1,450 sq.ft</div>
+              <div class="card-spec">🏢 Floor 12</div>
+            </div>
+            <div class="card-cta">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button>
+            </div>
+          </div>
+        </div>
+        <!-- Card 2 -->
+        <div class="property-card" onclick="navigate('detail')">
+          <div class="property-card-img card-bg-2">
+            🏠
+            <div class="card-img-overlay"></div>
+            <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+            <button class="card-save-btn" onclick="event.stopPropagation()">🤍</button>
+            <div class="card-price-tag">₹85 L</div>
+          </div>
+          <div class="property-card-body">
+            <div class="card-title">Independent Villa</div>
+            <div class="card-location">📍 Koramangala, Bengaluru</div>
+            <div class="card-specs">
+              <div class="card-spec">🛏 4 BHK</div>
+              <div class="card-spec">📐 2,200 sq.ft</div>
+              <div class="card-spec">🌿 Garden</div>
+            </div>
+            <div class="card-cta">
+              <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button>
+            </div>
+          </div>
+        </div>
+        <!-- Card 3 -->
+        <div class="property-card" onclick="navigate('detail')">
+          <div class="property-card-img card-bg-3">
+            🏗
+            <div class="card-img-overlay"></div>
+            <div class="card-badge-pos"><span class="badge-pending">Verification Pending</span></div>
+            <button class="card-save-btn" onclick="event.stopPropagation()">🤍</button>
+            <div class="card-price-tag">₹42 L</div>
+          </div>
+          <div class="property-card-body">
+            <div class="card-title">2BHK Ready-to-Move</div>
+            <div class="card-location">📍 Sector 62, Noida</div>
+            <div class="card-specs">
+              <div class="card-spec">🛏 2 BHK</div>
+              <div class="card-spec">📐 980 sq.ft</div>
+              <div class="card-spec">🚇 Metro</div>
+            </div>
+            <div class="card-cta">
+              <button class="btn btn-teal" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('booking')">Book Verification</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-label" style="background:rgba(15,169,142,0.15);border-color:rgba(15,169,142,0.3);">Process</div>
+      <h2 class="section-title" style="color:var(--white);">How Nivaro works</h2>
+      <p class="section-sub" style="color:rgba(255,255,255,0.5);">Three simple steps to a property you can trust completely.</p>
+      <div class="how-grid">
+        <div class="how-step">
+          <div class="step-num">01</div>
+          <div class="step-icon">🏠</div>
+          <div class="step-title">Choose a Property</div>
+          <div class="step-desc">Browse verified listings or submit any property address — listed elsewhere or found independently — for verification.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">02</div>
+          <div class="step-icon">🔍</div>
+          <div class="step-title">Nivaro Verifies It</div>
+          <div class="step-desc">Our team runs legal checks, document verification, and an on-ground inspection. You get a detailed report within 72 hours.</div>
+        </div>
+        <div class="how-step">
+          <div class="step-num">03</div>
+          <div class="step-icon">✅</div>
+          <div class="step-title">Proceed with Confidence</div>
+          <div class="step-desc">Make your decision armed with a complete picture. No hidden surprises, no fraud risk. Just clarity.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA BANNER -->
+  <section class="section" style="background: var(--off-white);">
+    <div class="container" style="text-align:center;">
+      <div class="section-label" style="margin:0 auto 20px;">Get Started</div>
+      <h2 class="section-title" style="margin-bottom:16px;">Ready to buy with confidence?</h2>
+      <p class="section-sub" style="margin: 0 auto 36px; text-align:center;">Join over 18,000 buyers who trusted Nivaro to make their most important financial decision safely.</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary btn-lg" onclick="navigate('listings')">Browse Verified Properties</button>
+        <button class="btn btn-teal btn-lg" onclick="navigate('booking')">Book a Verification</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <a class="nav-logo" onclick="navigate('home')">
+            <div class="logo-mark"></div>
+            <span class="logo-text">Niv<span>aro</span></span>
+          </a>
+          <p class="footer-brand-desc">India's first trust-first real estate platform where every property is verified before you decide.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Platform</div>
+          <a class="footer-link" onclick="navigate('listings')">Browse Properties</a>
+          <a class="footer-link" onclick="navigate('booking')">Verify a Property</a>
+          <a class="footer-link" onclick="navigate('dealer')">Dealer Panel</a>
+          <a class="footer-link" onclick="navigate('dashboard')">My Dashboard</a>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <a class="footer-link">About Nivaro</a>
+          <a class="footer-link">Careers</a>
+          <a class="footer-link">Press</a>
+          <a class="footer-link">Blog</a>
+        </div>
+        <div>
+          <div class="footer-col-title">Support</div>
+          <a class="footer-link">Help Center</a>
+          <a class="footer-link">Privacy Policy</a>
+          <a class="footer-link">Terms of Service</a>
+          <a class="footer-link">Contact Us</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="footer-copy">© 2025 Nivaro Technologies Pvt. Ltd. All rights reserved.</div>
+        <div style="display:flex;gap:16px;">
+          <span style="font-size:13px;color:rgba(255,255,255,0.3);">RERA Compliant</span>
+          <span style="font-size:13px;color:rgba(255,255,255,0.3);">ISO 27001</span>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: LISTINGS
+═══════════════════════════════════════ -->
+<div class="page" id="page-listings">
+  <div class="page-header">
+    <div class="container">
+      <button class="back-btn" onclick="navigate('home')">← Back to Home</button>
+      <h1 class="page-header-title">Browse Verified Properties</h1>
+      <p class="page-header-sub">4,200+ verified properties across India. Verified toggle is ON by default.</p>
+    </div>
+  </div>
+  <div class="container" style="padding-top:32px;padding-bottom:64px;">
+    <!-- Mobile filter btn -->
+    <button class="btn btn-ghost mobile-filter-btn" onclick="openFilterDrawer()">⚙ Filters & Sort</button>
+
+    <div class="listing-layout">
+      <!-- Sidebar Filters -->
+      <div class="filter-sidebar">
+        <div class="filter-title">Filters</div>
+
+        <div class="filter-group">
+          <div class="filter-label">Location</div>
+          <input class="filter-input" type="text" placeholder="City, Area or PIN code">
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Budget</div>
+          <input class="filter-input" type="text" placeholder="Min" style="margin-bottom:8px">
+          <input class="filter-input" type="text" placeholder="Max (e.g. 2 Cr)">
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">Property Type</div>
+          <div class="filter-chips">
+            <button class="filter-chip active" onclick="toggleChip(this)">All</button>
+            <button class="filter-chip" onclick="toggleChip(this)">Apartment</button>
+            <button class="filter-chip" onclick="toggleChip(this)">Villa</button>
+            <button class="filter-chip" onclick="toggleChip(this)">Plot</button>
+            <button class="filter-chip" onclick="toggleChip(this)">Commercial</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-label">BHK</div>
+          <div class="filter-chips">
+            <button class="filter-chip" onclick="toggleChip(this)">1 BHK</button>
+            <button class="filter-chip active" onclick="toggleChip(this)">2 BHK</button>
+            <button class="filter-chip active" onclick="toggleChip(this)">3 BHK</button>
+            <button class="filter-chip" onclick="toggleChip(this)">4+ BHK</button>
+          </div>
+        </div>
+
+        <div class="filter-group">
+          <div class="filter-toggle">
+            <div class="toggle-label">✓ Verified Only</div>
+            <div class="toggle-switch" id="verifiedToggle" onclick="toggleSwitch(this)"></div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;">Apply Filters</button>
+        <button class="btn btn-ghost" style="width:100%;justify-content:center;margin-top:8px;">Clear All</button>
+      </div>
+
+      <!-- Results -->
+      <div>
+        <div class="listings-header">
+          <div class="listings-count"><strong>47 properties</strong> found matching your criteria</div>
+          <select class="filter-input" style="width:auto;padding:8px 14px;">
+            <option>Sort: Relevance</option>
+            <option>Price: Low to High</option>
+            <option>Price: High to Low</option>
+            <option>Newest First</option>
+          </select>
+        </div>
+
+        <div class="listings-right-grid">
+          <!-- Reusable cards -->
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-1">🏢<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+              <div class="card-price-tag">₹1.2 Cr</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">3BHK Premium Apartment</div>
+              <div class="card-location">📍 Bandra West, Mumbai</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 3 BHK</div><div class="card-spec">📐 1,450 sqft</div><div class="card-spec">🏢 Fl. 12</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button></div>
+            </div>
+          </div>
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-2">🏠<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+              <div class="card-price-tag">₹85 L</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">Independent Villa</div>
+              <div class="card-location">📍 Koramangala, Bengaluru</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 4 BHK</div><div class="card-spec">📐 2,200 sqft</div><div class="card-spec">🌿 Garden</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button></div>
+            </div>
+          </div>
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-3">🏗<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-pending">Pending</span></div>
+              <div class="card-price-tag">₹42 L</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">2BHK Ready to Move</div>
+              <div class="card-location">📍 Sector 62, Noida</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 2 BHK</div><div class="card-spec">📐 980 sqft</div><div class="card-spec">🚇 Metro</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-teal" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('booking')">Book Verification</button></div>
+            </div>
+          </div>
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-4">🏙<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+              <div class="card-price-tag">₹3.5 Cr</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">Penthouse with Sea View</div>
+              <div class="card-location">📍 Marine Lines, Mumbai</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 4 BHK</div><div class="card-spec">📐 3,100 sqft</div><div class="card-spec">🌊 Sea</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button></div>
+            </div>
+          </div>
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-5">🏘<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+              <div class="card-price-tag">₹68 L</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">Row House Gated Society</div>
+              <div class="card-location">📍 Hinjewadi, Pune</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 3 BHK</div><div class="card-spec">📐 1,760 sqft</div><div class="card-spec">🚗 Parking</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button></div>
+            </div>
+          </div>
+          <div class="property-card" onclick="navigate('detail')">
+            <div class="property-card-img card-bg-6">🏛<div class="card-img-overlay"></div>
+              <div class="card-badge-pos"><span class="badge-verified">Verified</span></div>
+              <div class="card-price-tag">₹22 L</div>
+            </div>
+            <div class="property-card-body">
+              <div class="card-title">Affordable 1BHK Flat</div>
+              <div class="card-location">📍 Electronic City, Bengaluru</div>
+              <div class="card-specs">
+                <div class="card-spec">🛏 1 BHK</div><div class="card-spec">📐 560 sqft</div><div class="card-spec">🔋 Power</div>
+              </div>
+              <div class="card-cta"><button class="btn btn-primary" style="width:100%;justify-content:center" onclick="event.stopPropagation();navigate('detail')">View Details</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Filter Drawer -->
+  <div class="filter-drawer" id="filterDrawer">
+    <div class="filter-drawer-overlay" onclick="closeFilterDrawer()"></div>
+    <div class="filter-drawer-panel">
+      <div class="drawer-handle"></div>
+      <div class="filter-title">Filters</div>
+      <div class="filter-group">
+        <div class="filter-label">Location</div>
+        <input class="filter-input" type="text" placeholder="City or Area">
+      </div>
+      <div class="filter-group">
+        <div class="filter-label">Property Type</div>
+        <div class="filter-chips">
+          <button class="filter-chip active" onclick="toggleChip(this)">All</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Apartment</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Villa</button>
+          <button class="filter-chip" onclick="toggleChip(this)">Plot</button>
+        </div>
+      </div>
+      <div class="filter-group">
+        <div class="filter-toggle">
+          <div class="toggle-label">✓ Verified Only</div>
+          <div class="toggle-switch" onclick="toggleSwitch(this)"></div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;">
+        <button class="btn btn-ghost" style="justify-content:center" onclick="closeFilterDrawer()">Clear</button>
+        <button class="btn btn-primary" style="justify-content:center" onclick="closeFilterDrawer()">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: DETAIL
+═══════════════════════════════════════ -->
+<div class="page" id="page-detail">
+  <div class="page-header">
+    <div class="container">
+      <div class="page-header-breadcrumb">
+        <span class="breadcrumb-link" onclick="navigate('home')">Home</span>
+        <span class="breadcrumb-sep">/</span>
+        <span class="breadcrumb-link" onclick="navigate('listings')">Properties</span>
+        <span class="breadcrumb-sep">/</span>
+        <span>3BHK Premium Apartment, Bandra West</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <h1 class="page-header-title">3BHK Premium Apartment</h1>
+        <span class="badge-verified" style="font-size:13px;padding:6px 14px;">Verified Property</span>
+      </div>
+      <p class="page-header-sub">📍 Bandra West, Mumbai, Maharashtra</p>
+    </div>
+  </div>
+
+  <div class="container page-detail-content" style="padding-top:32px;padding-bottom:64px;">
+    <div class="detail-grid">
+      <!-- Left -->
+      <div>
+        <div class="detail-gallery card-bg-1">🏢</div>
+        <div class="gallery-thumbnails">
+          <div class="thumb card-bg-1">🏢</div>
+          <div class="thumb card-bg-2">🛋</div>
+          <div class="thumb card-bg-3">🛏</div>
+          <div class="thumb card-bg-4">🚿</div>
+        </div>
+
+        <div class="mt-24">
+          <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:12px;">Property Specifications</h3>
+          <div class="detail-specs-grid">
+            <div class="detail-spec"><div class="detail-spec-val">3 BHK</div><div class="detail-spec-label">Configuration</div></div>
+            <div class="detail-spec"><div class="detail-spec-val">1,450</div><div class="detail-spec-label">Sq.ft Built-up</div></div>
+            <div class="detail-spec"><div class="detail-spec-val">12th</div><div class="detail-spec-label">Floor</div></div>
+            <div class="detail-spec"><div class="detail-spec-val">2019</div><div class="detail-spec-label">Built Year</div></div>
+            <div class="detail-spec"><div class="detail-spec-val">East</div><div class="detail-spec-label">Facing</div></div>
+            <div class="detail-spec"><div class="detail-spec-val">2</div><div class="detail-spec-label">Parking</div></div>
+          </div>
+        </div>
+
+        <div class="mt-24">
+          <h3 style="font-size:18px;font-weight:700;color:var(--navy);margin-bottom:8px;">About this Property</h3>
+          <p style="font-size:14px;color:var(--text-soft);line-height:1.8;">
+            A stunning 3BHK premium apartment in the heart of Bandra West, offering panoramic views of the Arabian Sea. The property features marble flooring, modular kitchen, and a spacious balcony. Located in a well-maintained gated complex with 24/7 security, gymnasium, swimming pool, and ample parking. All documents are clear and RERA registered.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;">
+            <span class="filter-chip active">Swimming Pool</span>
+            <span class="filter-chip active">Gym</span>
+            <span class="filter-chip active">24/7 Security</span>
+            <span class="filter-chip active">Power Backup</span>
+            <span class="filter-chip active">Lift</span>
+            <span class="filter-chip active">Clubhouse</span>
+          </div>
+        </div>
+
+        <!-- Verification Breakdown -->
+        <div class="mt-24">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <h3 style="font-size:18px;font-weight:700;color:var(--navy);">Nivaro Verification Report</h3>
+            <span class="badge-verified">All Clear</span>
+          </div>
+          <div class="verify-breakdown">
+            <div class="verify-item">
+              <div class="verify-item-left">
+                <div class="verify-icon">⚖️</div>
+                <div>
+                  <div class="verify-name">Legal Verification</div>
+                  <div style="font-size:12px;color:var(--text-soft);">Encumbrance & litigation check completed</div>
+                </div>
+              </div>
+              <div class="verify-status-done">✓ Verified</div>
+            </div>
+            <div class="verify-item">
+              <div class="verify-item-left">
+                <div class="verify-icon">📄</div>
+                <div>
+                  <div class="verify-name">Document Verification</div>
+                  <div style="font-size:12px;color:var(--text-soft);">Sale deed, RERA, OC/CC all checked</div>
+                </div>
+              </div>
+              <div class="verify-status-done">✓ Verified</div>
+            </div>
+            <div class="verify-item">
+              <div class="verify-item-left">
+                <div class="verify-icon">🔍</div>
+                <div>
+                  <div class="verify-name">On-Ground Inspection</div>
+                  <div style="font-size:12px;color:var(--text-soft);">Site visit on 14 Mar 2025 — No discrepancies</div>
+                </div>
+              </div>
+              <div class="verify-status-done">✓ Verified</div>
+            </div>
+            <div class="verify-item">
+              <div class="verify-item-left">
+                <div class="verify-icon">🏛</div>
+                <div>
+                  <div class="verify-name">Title Clear</div>
+                  <div style="font-size:12px;color:var(--text-soft);">No disputes, clean ownership chain</div>
+                </div>
+              </div>
+              <div class="verify-status-done">✓ Verified</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="detail-sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-price">₹1.2 Crore</div>
+          <div class="sidebar-price-sub">₹8,276 / sq.ft · Negotiable</div>
+          <div class="dealer-info">
+            <div class="dealer-avatar">👤</div>
+            <div>
+              <div class="dealer-name">Rajesh Sharma</div>
+              <div class="dealer-role">Verified Dealer · 4.8 ★ (142 reviews)</div>
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-teal" style="width:100%;justify-content:center;" onclick="navigate('booking')">
+              ✓ Book Verification
+            </button>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;">
+              📞 Contact Dealer
+            </button>
+            <button class="btn btn-ghost" style="width:100%;justify-content:center;">
+              🤍 Save Property
+            </button>
+          </div>
+          <div class="divider"></div>
+          <div style="font-size:12px;color:var(--text-soft);text-align:center;line-height:1.6;">
+            🔒 Your personal info is safe. Nivaro never shares your details without consent.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile CTA Bar -->
+  <div class="mobile-cta-bar">
+    <button class="btn btn-teal" onclick="navigate('booking')">Book Verification</button>
+    <button class="btn btn-primary">Contact Dealer</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: BOOKING FLOW
+═══════════════════════════════════════ -->
+<div class="page" id="page-booking">
+  <div class="booking-container">
+    <button class="back-btn-dark" onclick="navigate('home')">← Back</button>
+    <h2 style="font-family:'Fraunces',serif;font-size:28px;font-weight:600;color:var(--navy);margin-bottom:6px;">Book a Property Verification</h2>
+    <p style="font-size:14px;color:var(--text-soft);margin-bottom:36px;">Complete 3 quick steps to get your property verified by Nivaro experts.</p>
+
+    <!-- Steps -->
+    <div class="booking-steps">
+      <div class="booking-step">
+        <div class="step-circle active" id="sc1">1</div>
+        <div class="step-label active" id="sl1">Property Details</div>
+      </div>
+      <div class="step-connector" id="con1"></div>
+      <div class="booking-step">
+        <div class="step-circle" id="sc2">2</div>
+        <div class="step-label" id="sl2">Select Plan</div>
+      </div>
+      <div class="step-connector" id="con2"></div>
+      <div class="booking-step">
+        <div class="step-circle" id="sc3">3</div>
+        <div class="step-label" id="sl3">Schedule</div>
+      </div>
+    </div>
+
+    <!-- Step 1 -->
+    <div class="booking-card" id="booking-step-1">
+      <div class="booking-card-title">Enter Property Details</div>
+      <div class="booking-card-sub">Tell us about the property you'd like verified, or paste a listing URL.</div>
+      <div class="form-group">
+        <label class="form-label">Property Address or Listing URL</label>
+        <input class="form-input" type="text" placeholder="e.g. 12B Silver Heights, Bandra West, Mumbai 400050">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Property Type</label>
+        <select class="form-input">
+          <option>Residential Apartment</option>
+          <option>Independent House / Villa</option>
+          <option>Plot / Land</option>
+          <option>Commercial Property</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;">
+        <div class="form-group">
+          <label class="form-label">Approx. Value (₹)</label>
+          <input class="form-input" type="text" placeholder="e.g. 1.2 Crore">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Your Purpose</label>
+          <select class="form-input">
+            <option>Buying</option>
+            <option>Renting</option>
+            <option>Investment</option>
+          </select>
+        </div>
+      </div>
+      <div class="booking-nav">
+        <div></div>
+        <button class="btn btn-primary btn-lg" onclick="bookingNext(2)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="booking-card" id="booking-step-2" style="display:none;">
+      <div class="booking-card-title">Choose Verification Plan</div>
+      <div class="booking-card-sub">Select the level of verification that suits your needs.</div>
+      <div class="plan-grid">
+        <div class="plan-card" onclick="selectPlan(this,'basic')">
+          <div class="plan-check">✓</div>
+          <div class="plan-card-name">Basic</div>
+          <div class="plan-card-price">₹2,999</div>
+          <div class="plan-card-desc">Document check + Legal review. Delivered in 48 hrs.</div>
+        </div>
+        <div class="plan-card selected" onclick="selectPlan(this,'full')">
+          <div class="plan-check">✓</div>
+          <div class="plan-card-name">Full Verification</div>
+          <div class="plan-card-price">₹5,999</div>
+          <div class="plan-card-desc">Documents + Legal + On-ground inspection. 72 hrs.</div>
+        </div>
+      </div>
+      <div class="mt-24" style="background:var(--off-white);border-radius:var(--radius-md);padding:16px 20px;">
+        <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;">What's included in Full Verification:</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid);">✅ Legal title search & encumbrance certificate</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid);">✅ Document authenticity check (RERA, OC, CC)</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid);">✅ Certified inspector site visit</div>
+          <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-mid);">✅ Detailed verification report with photos</div>
+        </div>
+      </div>
+      <div class="booking-nav">
+        <button class="btn btn-ghost" onclick="bookingNext(1)">← Back</button>
+        <button class="btn btn-primary btn-lg" onclick="bookingNext(3)">Continue →</button>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div class="booking-card" id="booking-step-3" style="display:none;">
+      <div class="booking-card-title">Schedule Verification</div>
+      <div class="booking-card-sub">Choose your preferred date and time slot for the site inspection.</div>
+      <div class="form-group">
+        <label class="form-label">Preferred Date</label>
+        <input class="form-input" type="date" id="bookingDate">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Available Time Slots</label>
+        <div class="time-slots">
+          <div class="time-slot selected" onclick="selectSlot(this)">9:00 AM</div>
+          <div class="time-slot" onclick="selectSlot(this)">11:00 AM</div>
+          <div class="time-slot" onclick="selectSlot(this)">1:00 PM</div>
+          <div class="time-slot" onclick="selectSlot(this)">3:00 PM</div>
+          <div class="time-slot" onclick="selectSlot(this)">5:00 PM</div>
+          <div class="time-slot" onclick="selectSlot(this)">7:00 PM</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Your Contact Number</label>
+        <input class="form-input" type="tel" placeholder="+91 98765 43210">
+      </div>
+
+      <!-- Pricing Summary -->
+      <div style="background:var(--off-white);border-radius:var(--radius-md);padding:20px;margin-top:8px;">
+        <div style="font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;">Booking Summary</div>
+        <div class="summary-row"><div class="summary-key">Verification Plan</div><div class="summary-val">Full Verification</div></div>
+        <div class="summary-row"><div class="summary-key">Property Type</div><div class="summary-val">Residential Apartment</div></div>
+        <div class="summary-row"><div class="summary-key">Plan Fee</div><div class="summary-val">₹5,999</div></div>
+        <div class="summary-row"><div class="summary-key">GST (18%)</div><div class="summary-val">₹1,080</div></div>
+        <div class="summary-row" style="border-bottom:none;margin-top:8px;padding-top:12px;border-top:1px solid var(--grey-200);">
+          <div class="summary-key summary-total" style="font-weight:700;color:var(--navy);">Total</div>
+          <div class="summary-val summary-total" style="font-size:18px;">₹7,079</div>
+        </div>
+      </div>
+
+      <div class="booking-nav">
+        <button class="btn btn-ghost" onclick="bookingNext(2)">← Back</button>
+        <button class="btn btn-teal btn-lg" onclick="bookingConfirm()">Confirm Booking ✓</button>
+      </div>
+    </div>
+
+    <!-- Success -->
+    <div class="booking-card" id="booking-success" style="display:none;">
+      <div class="success-screen">
+        <div class="success-icon">✅</div>
+        <div class="success-title">Booking Confirmed!</div>
+        <div class="success-sub">Your property verification has been booked. Our team will contact you within 2 hours to confirm the visit.</div>
+        <div class="booking-id">NVR-2025-04891</div>
+        <div style="margin-top:32px;display:flex;flex-direction:column;gap:10px;">
+          <button class="btn btn-primary" style="justify-content:center" onclick="navigate('dashboard')">View in Dashboard</button>
+          <button class="btn btn-ghost" style="justify-content:center" onclick="navigate('listings')">Browse More Properties</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: DEALER
+═══════════════════════════════════════ -->
+<div class="page" id="page-dealer">
+  <div class="auth-container">
+    <button class="back-btn-dark" onclick="navigate('home')">← Back to Home</button>
+    <div class="auth-card">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <div class="logo-mark" style="width:28px;height:28px;border-radius:7px;"></div>
+        <div style="font-family:'Fraunces',serif;font-size:18px;font-weight:600;color:var(--navy);">Dealer Panel</div>
+      </div>
+      <div class="auth-title">Register as a Dealer</div>
+      <div class="auth-sub">List verified properties and connect with serious buyers on Nivaro.</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">First Name</label><input class="form-input" type="text" placeholder="Rajesh"></div>
+        <div class="form-group"><label class="form-label">Last Name</label><input class="form-input" type="text" placeholder="Sharma"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Business Email</label><input class="form-input" type="email" placeholder="rajesh@realtors.com"></div>
+      <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" placeholder="+91 98765 43210"></div>
+      <div class="form-group"><label class="form-label">RERA Agent ID</label><input class="form-input" type="text" placeholder="MH/AGENT/2024/01234"></div>
+      <div class="form-group"><label class="form-label">City of Operation</label><input class="form-input" type="text" placeholder="Mumbai"></div>
+      <div class="form-group">
+        <label class="form-label">Upload License / ID Proof</label>
+        <div style="border:2px dashed var(--grey-200);border-radius:var(--radius-sm);padding:24px;text-align:center;cursor:pointer;transition:var(--transition);" onmouseenter="this.style.borderColor='var(--teal)'" onmouseleave="this.style.borderColor='var(--grey-200)'">
+          <div style="font-size:28px;margin-bottom:8px;">📁</div>
+          <div style="font-size:13px;font-weight:600;color:var(--navy);">Click to upload or drag & drop</div>
+          <div style="font-size:12px;color:var(--text-soft);margin-top:4px;">PDF, JPG, PNG up to 10MB</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;" onclick="navigate('dashboard')">Create Dealer Account →</button>
+      <div style="text-align:center;margin-top:16px;font-size:13px;color:var(--text-soft);">
+        Already have an account? <span style="color:var(--teal);font-weight:600;cursor:pointer;">Sign in</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     PAGE: DASHBOARD
+═══════════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="dashboard-layout">
+    <!-- Sidebar Nav -->
+    <div class="dash-sidebar">
+      <div style="display:flex;align-items:center;gap:8px;padding:16px 14px;margin-bottom:8px;">
+        <div class="dealer-avatar" style="width:38px;height:38px;">👤</div>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--navy);">Priya Mehta</div>
+          <div style="font-size:12px;color:var(--text-soft);">Verified Buyer</div>
+        </div>
+      </div>
+      <div class="dash-nav-item active"><span class="dash-nav-icon">📊</span> Overview</div>
+      <div class="dash-nav-item" onclick="this.parentElement.querySelectorAll('.dash-nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')"><span class="dash-nav-icon">🔍</span> My Verifications</div>
+      <div class="dash-nav-item" onclick="this.parentElement.querySelectorAll('.dash-nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')"><span class="dash-nav-icon">🏠</span> Saved Properties</div>
+      <div class="dash-nav-item" onclick="this.parentElement.querySelectorAll('.dash-nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')"><span class="dash-nav-icon">📄</span> Documents</div>
+      <div class="dash-nav-item" onclick="this.parentElement.querySelectorAll('.dash-nav-item').forEach(n=>n.classList.remove('active'));this.classList.add('active')"><span class="dash-nav-icon">⚙</span> Settings</div>
+      <div style="margin-top:24px;border-top:1px solid var(--grey-100);padding-top:16px;">
+        <div class="dash-nav-item" onclick="navigate('home')"><span class="dash-nav-icon">←</span> Back to Home</div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div>
+      <div class="dash-header">
+        <div class="dash-title">Good morning, Priya 👋</div>
+        <div class="dash-sub">Here's an overview of your verification activity and saved properties.</div>
+      </div>
+
+      <div class="dash-stats">
+        <div class="dash-stat">
+          <div class="dash-stat-val">3</div>
+          <div class="dash-stat-label">Active Verifications</div>
+          <div class="dash-stat-change">↑ 2 this month</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-val">7</div>
+          <div class="dash-stat-label">Saved Properties</div>
+          <div class="dash-stat-change">Updated 2 days ago</div>
+        </div>
+        <div class="dash-stat">
+          <div class="dash-stat-val">1</div>
+          <div class="dash-stat-label">Completed</div>
+          <div class="dash-stat-change">₹5,999 spent</div>
+        </div>
+      </div>
+
+      <!-- Verifications Table -->
+      <div class="table-container">
+        <div class="table-header">
+          <div class="table-title">My Verification Bookings</div>
+          <button class="btn btn-teal" style="padding:8px 16px;" onclick="navigate('booking')">+ New Booking</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Booking ID</th>
+              <th>Property</th>
+              <th>Plan</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--navy);">NVR-2025-04891</strong></td>
+              <td>3BHK, Bandra West, Mumbai</td>
+              <td>Full Verification</td>
+              <td>May 3, 2025</td>
+              <td><span class="status-badge status-progress">● In Progress</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--navy);">NVR-2025-04762</strong></td>
+              <td>2BHK, Sector 62, Noida</td>
+              <td>Basic</td>
+              <td>Apr 28, 2025</td>
+              <td><span class="status-badge status-pending">● Pending</span></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--navy);">NVR-2025-04521</strong></td>
+              <td>Villa, Koramangala, Bengaluru</td>
+              <td>Full Verification</td>
+              <td>Apr 14, 2025</td>
+              <td><span class="status-badge status-done">✓ Completed</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Saved Properties -->
+      <div class="table-container" style="margin-top:24px;">
+        <div class="table-header">
+          <div class="table-title">Saved Properties</div>
+          <button class="btn btn-ghost" style="padding:8px 16px;" onclick="navigate('listings')">Browse More</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Location</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong style="color:var(--navy);">3BHK Apartment</strong></td>
+              <td>Bandra West, Mumbai</td>
+              <td>₹1.2 Cr</td>
+              <td><span class="badge-verified">Verified</span></td>
+              <td><button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="navigate('detail')">View →</button></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--navy);">Penthouse</strong></td>
+              <td>Marine Lines, Mumbai</td>
+              <td>₹3.5 Cr</td>
+              <td><span class="badge-verified">Verified</span></td>
+              <td><button class="btn btn-ghost" style="padding:5px 12px;font-size:12px;" onclick="navigate('detail')">View →</button></td>
+            </tr>
+            <tr>
+              <td><strong style="color:var(--navy);">Row House</strong></td>
+              <td>Hinjewadi, Pune</td>
+              <td>₹68 L</td>
+              <td><span class="badge-pending">Pending</span></td>
+              <td><button class="btn btn-teal" style="padding:5px 12px;font-size:12px;" onclick="navigate('booking')">Verify</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── NAVIGATION ──
+  function navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Reset booking if going to booking page fresh from other places
+    if (page === 'booking') {
+      resetBooking();
+    }
+  }
+
+  // ── MOBILE MENU ──
+  function toggleMenu() {
+    const menu = document.getElementById('mobileMenu');
+    menu.classList.toggle('open');
+  }
+
+  // ── FILTER TOGGLE ──
+  function toggleSwitch(el) {
+    el.classList.toggle('off');
+  }
+
+  function toggleChip(el) {
+    el.classList.toggle('active');
+  }
+
+  // ── FILTER DRAWER ──
+  function openFilterDrawer() {
+    document.getElementById('filterDrawer').classList.add('open');
+  }
+  function closeFilterDrawer() {
+    document.getElementById('filterDrawer').classList.remove('open');
+  }
+
+  // ── BOOKING FLOW ──
+  let currentBookingStep = 1;
+
+  function resetBooking() {
+    currentBookingStep = 1;
+    ['booking-step-1','booking-step-2','booking-step-3','booking-success'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById('booking-step-1').style.display = 'block';
+    updateStepUI(1);
+    // Set default date
+    const d = new Date();
+    d.setDate(d.getDate() + 3);
+    const dateInput = document.getElementById('bookingDate');
+    if (dateInput) dateInput.value = d.toISOString().split('T')[0];
+  }
+
+  function bookingNext(step) {
+    ['booking-step-1','booking-step-2','booking-step-3','booking-success'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    if (step <= 3) {
+      document.getElementById('booking-step-' + step).style.display = 'block';
+    }
+    currentBookingStep = step;
+    updateStepUI(step);
+  }
+
+  function bookingConfirm() {
+    ['booking-step-1','booking-step-2','booking-step-3'].forEach(id => {
+      document.getElementById(id).style.display = 'none';
+    });
+    document.getElementById('booking-success').style.display = 'block';
+    updateStepUI(4);
+  }
+
+  function updateStepUI(step) {
+    for (let i = 1; i <= 3; i++) {
+      const circle = document.getElementById('sc' + i);
+      const label = document.getElementById('sl' + i);
+      const con = document.getElementById('con' + i);
+      if (!circle) continue;
+      circle.classList.remove('active','done');
+      label.classList.remove('active');
+      if (i < step) {
+        circle.classList.add('done');
+        circle.textContent = '✓';
+        if (con) con.classList.add('done');
+      } else if (i === step) {
+        circle.classList.add('active');
+        circle.textContent = i;
+        label.classList.add('active');
+        if (con) con.classList.remove('done');
+      } else {
+        circle.textContent = i;
+        if (con) con.classList.remove('done');
+      }
+    }
+  }
+
+  function selectPlan(el, plan) {
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function selectSlot(el) {
+    document.querySelectorAll('.time-slot').forEach(s => s.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  // Init
+  resetBooking();
+
+  // Set today's date context
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 3);
+  const dateEl = document.getElementById('bookingDate');
+  if (dateEl) dateEl.value = tomorrow.toISOString().split('T')[0];
+</script>
+</body>
+</html>
